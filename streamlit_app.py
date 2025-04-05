@@ -87,7 +87,7 @@ else:
                 st.markdown(message["content"])
 
     # 추가 질문 입력 필드
-    if prompt := st.chat_input("러닝에 대해 더 물어보고 싶어요! (예: 페이스 개선 팁)"):
+    if prompt := st.chat_input("오늘 날짜를 입력하세요"):
 
         # 사용자 메시지 저장 및 표시
         st.session_state.messages.append({"role": "user", "content": prompt})
