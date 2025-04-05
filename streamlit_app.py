@@ -5,7 +5,7 @@ import pandas as pd
 # Show title and description.
 st.title("🏃‍♂️ 러닝 기록 챗봇")
 st.write(
-    "러닝 기록을 표에 입력하면 기록을 분석하고 러닝 팁을 제안해드려요! "
+    "당신이 달린 날짜를 입력해주세요! "
     "궁금한 점이 있으면 언제든 물어보세요. "
     "이 앱을 사용하려면 OpenAI API 키가 필요합니다. [여기](https://platform.openai.com/account/api-keys)에서 얻을 수 있어요."
 )
