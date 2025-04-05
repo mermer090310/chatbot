@@ -21,7 +21,7 @@ else:
     # Create a session state variable to store the chat messages.
     if "messages" not in st.session_state:
         st.session_state.messages = [
-            {"role": "system", "content": "당신은 러닝 기록 챗봇입니다. 사용자가 표에 입력한 러닝 기록(날짜, 거리, 시간 등)을 기반으로 기록을 분석하거나, 러닝 팁을 제안해주세요. 자연스럽고 친절한 한국어로 대답하세요."}
+            {"role": "system", "content": "당신은 러닝 기록 챗봇입니다. 사용자에게 러닝한 날짜, 거리, 시간을 차례대로 물어 그 값을 표에 기록해주세요. 자연스럽고 친절한 한국어로 질문하세요." }
         ]
 
     # 러닝 기록 입력을 위한 표 생성
