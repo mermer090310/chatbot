@@ -8,33 +8,44 @@ st.write(
     "러닝 기록을 입력하면 일자별로 정리하고, 거리 변화를 그래프로 보여드려요!"
 )
 
-# 러닝 기록 입력을 위한 표 생성
-st.subheader("러닝 기록 입력")
+# 러닝 기록을 저장할 데이터프레임 초기화
 if "running_df" not in st.session_state:
     st.session_state.running_df = pd.DataFrame(
-        {"날짜": ["", "", ""], "거리(km)": [0.0, 0.0, 0.0], "시간(분)": [0, 0, 0]}
+        columns=["날짜", "거리(km)", "시간(분)"]
     )
 
-# 동적 표 편집기
-edited_df = st.data_editor(
-    st.session_state.running_df,
-    num_rows="dynamic",  # 행 추가/삭제 가능
-    column_config={
-        "날짜": st.column_config.TextColumn("날짜", help="예: 2025-04-05"),
-        "거리(km)": st.column_config.NumberColumn("거리(km)", help="킬로미터 단위, 예: 5.0", min_value=0.0),
-        "시간(분)": st.column_config.NumberColumn("시간(분)", help="분 단위, 예: 30", min_value=0)
-    },
-    key="running_table"
-)
+# 러닝 기록 입력 폼 생성
+st.subheader("러닝 기록 입력")
+with st.form(key="running_form"):
+    date = st.text_input("날짜 (YYYY-MM-DD)", placeholder="예: 2025-04-05")
+    distance = st.number_input("거리(km)", min_value=0.0, step=0.1, help="킬로미터 단위, 예: 5.0")
+    time = st.number_input("시간(분)", min_value=0, step=1, help="분 단위, 예: 30")
+    submit_button = st.form_submit_button(label="기록 추가")
 
-# 표 데이터를 세션 상태에 저장
-st.session_state.running_df = edited_df
+    # 폼 제출 시 데이터 추가
+    if submit_button:
+        if date and distance > 0 and time > 0:
+            try:
+                # 날짜 형식 검증
+                pd.to_datetime(date)
+                # 새로운 기록 추가
+                new_record = pd.DataFrame(
+                    [[date, distance, time]],
+                    columns=["날짜", "거리(km)", "시간(분)"]
+                )
+                st.session_state.running_df = pd.concat(
+                    [st.session_state.running_df, new_record], ignore_index=True
+                )
+                st.success("기록이 추가되었습니다!")
+            except ValueError:
+                st.error("날짜 형식이 잘못되었습니다. 'YYYY-MM-DD' 형식으로 입력해주세요. (예: 2025-04-05)")
+        else:
+            st.warning("모든 값을 입력해주세요. 거리와 시간은 0보다 커야 합니다.")
 
 # 기록 정리 및 그래프 그리기
 st.subheader("러닝 기록 정리 및 그래프")
 if st.button("기록 보기"):
-    # 빈 값 제외 및 데이터 정리
-    df = edited_df.dropna(subset=["날짜", "거리(km)", "시간(분)"]).copy()
+    df = st.session_state.running_df.copy()
     
     if not df.empty:
         # 날짜 형식을 datetime으로 변환
@@ -58,4 +69,4 @@ if st.button("기록 보기"):
         st.line_chart(df_for_graph)
 
     else:
-        st.warning("입력된 기록이 없습니다. 표에 데이터를 입력해주세요.")
+        st.warning("입력된 기록이 없습니다. 데이터를 입력해주세요.")
